@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 fMove() {
   echo "------------------------------------------------" >> $LOGS
   for FILE in `ls ${1}`
@@ -18,6 +17,12 @@ fLocation() {
   echo $1 | tee -a $LOGS
   echo $3 >> $LOGS
   [[ -d "$3" ]] && fMove $2 $3 || echo "Path ${3} is not aviable" | tee -a $LOGS
+}
+
+fClean() {
+  if [ -d "${1}" ]; then
+    rm .PreAllocFile_* 2> /dev/null
+  fi
 }
 
 echo 
