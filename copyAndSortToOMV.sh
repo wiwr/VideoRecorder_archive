@@ -2,11 +2,10 @@
 
 fMove() {
   echo "------------------------------------------------" >> $LOGS
-  for FILE in `ls ${1}`
-  do
-	  DEST=(${2}/${FILE:0:4}/${FILE:4:2}/${FILE:6:2})
+  for FILE in `ls ${1}`; do
+    DEST=(${2}/${FILE:0:4}/${FILE:4:2}/${FILE:6:2})
     FILE="${1}/${FILE}"
-	  [[ ! -d "$DEST" ]] &&  mkdir -p $DEST
+    [[ ! -d "$DEST" ]] &&  mkdir -p $DEST
     cp -v $FILE  $DEST 2>> $LOGS
     let COUNT_FILES++
   done
@@ -25,8 +24,6 @@ fClean() {
   fi
 }
 
-echo 
-
 DATE=`date "+%Y%m%d"`
 TIME=`date "+%H%M%S"`
 LOGFOLDER="/data/VideoRecordeArch/log"
@@ -35,15 +32,16 @@ LOGS="${LOGFOLDER}/log_${DATE}_${TIME}.log"
 [[ ! -d "$LOGFOLDER" ]] && mkdir -p $LOGFOLDER
 echo -e "Date: ${DATE:0:4}-${DATE:4:2}-${DATE:6:2} Time: ${TIME:0:2}:${TIME:2:2}:${TIME:4:2}\n" >> $LOGS
 
-echo "Podaj markę pojazdu, z którego wyciągnięto kartę:"
-CARS="Citroen Megane Test"
+#echo "Podaj markę pojazdu, z którego wyciągnięto kartę:"
+#CARS="Citroen Megane Test"
 
-select CAR in $CARS; do
-  echo "Wybrano ${CAR}"
-  read -p "Potwierdz ten wybór wpisując 'tak': " TAK
-  [[ "$TAK" == "tak" ]] && break
-done
+#select CAR in $CARS; do
+#  echo "Wybrano ${CAR}"
+#  read -p "Potwierdz ten wybór wpisując 'tak': " TAK
+#  [[ "$TAK" == "tak" ]] && break
+#done
 
+CAR=Megane
 echo $CAR
 COUNT_FILES=0
 START_TIME=$(date +'%s')
