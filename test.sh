@@ -1,17 +1,25 @@
 #!/bin/bash
 
+fNeededTime() {
+   TIME_NEED=$(($(date +'%s') - ${1}))
+   DISPLAY_TIME="$((TIME_NEED/3600))h $(((TIME_NEED/60)%60))m $((TIME_NEED%60))s"
+   echo "Wykonanie trwało ${DISPLAY_TIME}" | tee -a $LOGS
+}
 
 fCopy() {
     echo "--------------------------------------------------------------------------" >> $LOGS
     for file in `ls ${1}`; do
+	START_COPY_TIME=$(date +'%s')
 	dest=${2}/${folder}/${file:0:4}/${file:5:2}/${file:8:2}
 	srce=${1}/${file}
 	if [[ ! -e "${dest}/${file}" ]]; then
           [[ ! -d "${dest}" ]] && mkdir -p ${dest}
 	  echo "Copping $srce to $dest"
 #         cp -v $srce $dest 2>> $LOGS
+         mv -v $srce $dest 2>> $LOGS
         else
-	  if cmp -s "$src_file" "${dest}/${file}"; then
+	  echo "cmp -s ${srce} ${dest}/${file}"
+	  if cmp -s "$srce" "${dest}/${file}"; then
             echo "File $srec exists with same content. No action taken."
 	  else
             echo "File $srce coppied with name ${file%.*}_$(date +%Y%m%d%H%M%S).${file##*.}"
@@ -19,6 +27,7 @@ fCopy() {
         fi
 #	cp -v $srce $dest 2>> $LOGS
 	let count_files++
+	fNeededTime $START_COPY_TIME
     done
     echo "--------------------------------------------------------------------------\n" >> $LOGS
 }
@@ -47,16 +56,15 @@ count_files=0
 START_TIME=$(date +'%s')
 
 #for directory in emr emr_b norm norm_b; do
+#for directory in emr emr_b;  do
 #    fLocation "++ ${directory} to external drive" "${directory}" "/mnt/nfs/Backup/VideoRecordeArch/Citroen/${directory}"
 #done
 
-for directory in emr emr_b norm norm_b; do
+for directory in emr emr_b norm_2024 norm_b_2024; do
     fLocation "++ ${directory} to local drive" "${directory}" "/data/VideoRecordeArch/Citroen/${directory}"
 done
 
-TIME_NEED=$(($(date +'%s') - $START_TIME))
-DISPLAY_TIME="$((TIME_NEED/3600))h $(((TIME_NEED/60)%60))m $((TIME_NEED%60))s"
-echo "Wykonanie trwało ${DISPLAY_TIME}" | tee -a $LOGS
+fNeededTime $START_TIME
 echo "Skopiowano ${count_files} plików" | tee -a $LOGS
 DATE=`date "+%Y-%m-%d"`
 TIME=`date "+%H:%M:%S"`
